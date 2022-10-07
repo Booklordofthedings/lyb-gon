@@ -12,7 +12,10 @@ class GonEntry
 		Custom,
 		Text,
 		Data,
-		Object
+		Object,
+		Array,
+		Integer,
+		BigNum
 	}
 
 	public String Name;
@@ -49,7 +52,26 @@ class GonEntry
 			Data =  Variant.Create<String>(pData);
 		case .Boolean:
 			TypeName = new String("Boolean");
-			Data =  Variant.Create<bool>(pData);
+			Result<bool> temp = bool.Parse(pData);
+			if(temp case .Ok)
+				Data = Variant.Create<bool>(temp.Value);
+			else
+			{
+				Data = Variant.Create<float>(2003);
+				Debug.WriteLine($"Line parsing error when trying to parse line: {pName}. The ParseLine method may be acessed illegaly");
+			}
+		case .Custom:
+			TypeName = new String(TypeName);
+			Data =  Variant.Create<String>(pData);
+		case .Text:
+			TypeName = new String("Text");
+			Data =  Variant.Create<String>(pData);
+		case .Data:
+			TypeName = new String("Data");
+			Data =  Variant.Create<String>(pData);
+		case .Object:
+			TypeName = new String("Object");
+			Data = Variant.Create<Gon>(pObject);
 		}
 	}
 	public ~this()
