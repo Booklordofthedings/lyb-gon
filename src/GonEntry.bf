@@ -23,8 +23,9 @@ class GonEntry
 	public gEntryTypes Type;
 	public Variant Data;
 	public Gon Object;
+	public System.Collections.List<GonEntry> Arrary;
 
-	private this(String pName, String pTypeName, gEntryTypes pType, String pData,  Gon pObject)
+	private this(String pName, String pTypeName, gEntryTypes pType, String pData,  Gon pObject, System.Collections.List<GonEntry> pArr)
 	{
 		/* This constructor shouldnt be called outside of the library, so we assume pData to always be a valid parse,
 		however when it isnt we instead assign a default value instead of shutting everything down */
@@ -72,6 +73,29 @@ class GonEntry
 		case .Object:
 			TypeName = new String("Object");
 			Data = Variant.Create<Gon>(pObject);
+		case .Array:
+			TypeName = new String("Array");
+			Data = Variant.Create<System.Collections.List<GonEntry>>(pArr);
+		case .Integer:
+			TypeName = new String("Integer");
+			Result<double> temp = double.Parse(pData);
+			if(temp case .Ok)
+				Data = Variant.Create<double>(temp.Value);
+			else
+			{
+				Data = Variant.Create<double>(2003);
+				Debug.WriteLine($"Line parsing error when trying to parse line: {pName}. The ParseLine method may be acessed illegaly");
+			}
+		case .BigNum:
+			TypeName = new String("Number");
+			Result<int32,Int32.ParseError> temp = int32.Parse(pData);
+			if(temp case .Ok)
+				Data = Variant.Create<int32>(temp.Value);
+			else
+			{
+				Data = Variant.Create<int32>(2003);
+				Debug.WriteLine($"Line parsing error when trying to parse line: {pName}. The ParseLine method may be acessed illegaly");
+			}
 		}
 	}
 	public ~this()
@@ -81,5 +105,7 @@ class GonEntry
 		Data.Dispose();
 		if(Type == .Object)
 			delete Object;
+		if(Type == .Array)
+			DeleteContainerAndItems!(Arrary);
 	}
 }
