@@ -1,5 +1,0 @@
-FileVersion = 1
-Projects = {lyb-gon = {Path = "."}}
-
-[Workspace]
-StartupProject = "lyb-gon"
