@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "lyb-gon"
+TargetType = "BeefLib"
+StartupObject = "lyb_gon.Program"
